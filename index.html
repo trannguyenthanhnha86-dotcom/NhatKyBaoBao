@@ -45,9 +45,11 @@ textarea{resize:vertical}
 .row{display:flex;align-items:center;gap:10px;background:#fff;border-radius:18px;padding:10px 12px;margin-bottom:8px;border:1.8px solid var(--vien)}
 .row .t{width:44px;flex:0 0 auto;font-size:14px;font-weight:700}
 .row .cir{width:36px;height:36px;flex:0 0 auto;border-radius:50%;display:flex;align-items:center;justify-content:center}
-.row .bd{min-width:0;flex:1}
-.row .b1{font-size:14px;font-weight:700;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-.row .b2{font-size:12px;color:var(--muc3);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.row{align-items:flex-start}
+.row .t{padding-top:2px}
+.row .bd{min-width:0;flex:1;display:flex;flex-direction:column;gap:2px;overflow:hidden}
+.row .b1{display:block;font-size:14px;font-weight:700;line-height:1.35;word-break:break-word}
+.row .b2{display:block;font-size:12px;color:var(--muc3);line-height:1.45;word-break:break-word}
 .row .x{flex:0 0 auto;color:var(--muc3);padding:4px 6px;font-size:15px}
 .grid2{display:grid;grid-template-columns:1fr 1fr;gap:10px}
 .grid3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:10px}
@@ -105,11 +107,11 @@ textarea{resize:vertical}
 <script>
 /* ============ dữ liệu ============ */
 var KEY='nhatkybe_v1';
-var S={be:{ten:'',dob:'',gt:'trai'},logs:{},cans:[],tt:{}};
+var S={be:{ten:'',dob:'',gt:'trai'},logs:{},cans:[],tt:{},tp:{}};
 var ngay=dk(new Date()), F={};
 
 function taiDL(){try{var r=localStorage.getItem(KEY);if(r){var d=JSON.parse(r);
-  S.be=d.be||S.be;S.logs=d.logs||{};S.cans=d.cans||[];S.tt=d.tt||{};}}catch(e){}}
+  S.be=d.be||S.be;S.logs=d.logs||{};S.cans=d.cans||[];S.tt=d.tt||{};S.tp=d.tp||{};}}catch(e){}}
 function luu(){try{localStorage.setItem(KEY,JSON.stringify(S));}catch(e){alert('Không lưu được. Máy có thể đang ở chế độ duyệt web riêng tư.');}}
 
 /* ============ ngày giờ ============ */
@@ -162,10 +164,16 @@ var PU={thich:'Thích',binhthuong:'Bình thường',khong:'Không thích',diung:
 var TA={uot:'Tã ướt',phan:'Đi ngoài',cahai:'Ướt và đi ngoài'};
 var MON=['Cháo','Bột','Bí đỏ','Cà rốt','Khoai lang','Chuối','Bơ','Táo','Rau ngót','Thịt gà','Thịt bò','Cá hồi','Trứng','Đậu hũ','Sữa chua','Phô mai'];
 var TG=['Vitamin D3','Men vi sinh','Kẽm','Sắt','Canxi','Hạ sốt','Ho','Kháng sinh','Nhỏ mũi'];
+var VT={nach:'Đo ở nách',tran:'Đo ở trán',tai:'Đo ở tai',mieng:'Đo ở miệng'};
+var TPG=[
+ ['rau','RAU CỦ','var(--la)','var(--laN)','var(--laV)',['Bí đỏ','Cà rốt','Khoai lang','Bí xanh','Su su','Rau ngót','Cải bó xôi','Bông cải','Mồng tơi','Cà chua']],
+ ['dam','ĐẠM','var(--an)','var(--anN)','var(--anV)',['Thịt gà','Thịt bò','Thịt heo','Cá','Tôm','Trứng','Đậu hũ','Sữa chua','Phô mai','Cua']],
+ ['bot','TINH BỘT','var(--ta)','var(--taN)','var(--taV)',['Cháo gạo','Bột ăn dặm','Khoai tây','Yến mạch','Mì','Nui','Bánh ăn dặm','Bắp']],
+ ['qua','TRÁI CÂY','var(--thuoc)','var(--thuocN)','var(--thuocV)',['Chuối','Bơ','Táo','Lê','Xoài','Đu đủ','Dưa hấu','Thanh long','Cam','Nho']]];
 var TICK=[['antot','Bé ăn tốt'],['suatot','Bé uống sữa tốt'],['anit','Bé ăn ít'],['bobu','Bé bỏ bú'],['monmoi','Có món ăn mới']];
-var MAU={milk:'var(--sua)',solid:'var(--an)',diaper:'var(--ta)',med:'var(--thuoc)'};
-var NEN={milk:'var(--suaN)',solid:'var(--anN)',diaper:'var(--taN)',med:'var(--thuocN)'};
-var VIEN={milk:'var(--suaV)',solid:'var(--anV)',diaper:'var(--taV)',med:'var(--thuocV)'};
+var MAU={milk:'var(--sua)',solid:'var(--an)',diaper:'var(--ta)',med:'var(--thuoc)',temp:'var(--do)'};
+var NEN={milk:'var(--suaN)',solid:'var(--anN)',diaper:'var(--taN)',med:'var(--thuocN)',temp:'var(--doN)'};
+var VIEN={milk:'var(--suaV)',solid:'var(--anV)',diaper:'var(--taV)',med:'var(--thuocV)',temp:'#F4B9AF'};
 
 /* ============ hình ============ */
 function icBinh(s){s=s||22;return '<svg viewBox="0 0 24 24" width="'+s+'" height="'+s+'">'+
@@ -204,7 +212,16 @@ function icSo(s){s=s||22;return '<svg viewBox="0 0 24 24" width="'+s+'" height="
  '<line x1="8" y1="10.4" x2="16" y2="10.4" stroke="#F5C542" stroke-width="1.6" stroke-linecap="round"/>'+
  '<line x1="8" y1="14" x2="16" y2="14" stroke="#F5C542" stroke-width="1.6" stroke-linecap="round"/>'+
  '<line x1="8" y1="17.4" x2="13" y2="17.4" stroke="#F5C542" stroke-width="1.6" stroke-linecap="round"/></svg>'}
-var IC={milk:icBinh,solid:icChen,diaper:icTa,med:icThuoc};
+function icNhiet(s){s=s||22;return '<svg viewBox="0 0 24 24" width="'+s+'" height="'+s+'">'+
+ '<path d="M10 14.6V5.2a2 2 0 0 1 4 0v9.4a4.4 4.4 0 1 1-4 0z" fill="#fff" stroke="#E0705C" stroke-width="1.6"/>'+
+ '<circle cx="12" cy="17.6" r="2.7" fill="#E0705C"/>'+
+ '<rect x="11" y="8.4" width="2" height="7.4" rx="1" fill="#E0705C"/>'+
+ '<line x1="15.4" y1="7.4" x2="17.4" y2="7.4" stroke="#F4B9AF" stroke-width="1.5" stroke-linecap="round"/>'+
+ '<line x1="15.4" y1="10.4" x2="17.4" y2="10.4" stroke="#F4B9AF" stroke-width="1.5" stroke-linecap="round"/>'+
+ '<line x1="15.4" y1="13.4" x2="17.4" y2="13.4" stroke="#F4B9AF" stroke-width="1.5" stroke-linecap="round"/></svg>'}
+function icLa(s){s=s||22;return '<svg viewBox="0 0 24 24" width="'+s+'" height="'+s+'">'+
+ '<path d="M20 4C10.5 4.4 4.6 8.4 4.6 15.2c0 1.6.4 3 1 4.2C7.4 13 11.6 9.6 17 8.6c-4.6 2-8 5.6-9.4 11 1 .3 2 .4 3 .4 7 0 9.6-6.4 9.4-16z" fill="#C0DC9A" stroke="#84B44F" stroke-width="1.5" stroke-linejoin="round"/></svg>'}
+var IC={milk:icBinh,solid:icChen,diaper:icTa,med:icThuoc,temp:icNhiet};
 function tim(s,m,o){return '<svg viewBox="0 0 24 24" width="'+s+'" height="'+s+'" style="opacity:'+(o||1)+'"><path d="M12 21s-7.2-4.7-9.4-8.2A5.4 5.4 0 0 1 12 6.2a5.4 5.4 0 0 1 9.4 6.6C19.2 16.3 12 21 12 21z" fill="'+m+'"/></svg>'}
 function matBe(sz,ngu){var s=sz||44;return '<svg viewBox="0 0 64 64" width="'+s+'" height="'+s+'">'+
  '<path d="M12 30c0-11 9-18 20-18s20 7 20 18z" fill="#8A6247"/>'+
@@ -315,6 +332,28 @@ function bieuDoCan(){
   return o+'</svg>';
 }
 
+function bieuDoNhiet(ns){
+  var W=320,H=140,mL=30,mR=10,mT=12,mB=22;
+  var xs=ns.map(function(e){return tmin(e.time)}), ys=ns.map(function(e){return e.nd});
+  var x0=Math.min.apply(null,xs), x1=Math.max.apply(null,xs); if(x1===x0)x1=x0+60;
+  var y0=Math.min(36.5,Math.min.apply(null,ys))-.3, y1=Math.max(38.5,Math.max.apply(null,ys))+.3;
+  function px(v){return mL+(v-x0)/(x1-x0)*(W-mL-mR)}
+  function py(v){return H-mB-(v-y0)/(y1-y0)*(H-mT-mB)}
+  var o='<svg viewBox="0 0 '+W+' '+H+'" style="width:100%;display:block">';
+  o+='<rect x="'+mL+'" y="'+mT+'" width="'+(W-mL-mR)+'" height="'+(py(37.5)-mT).toFixed(1)+'" fill="#FDEDEA"/>';
+  o+='<line x1="'+mL+'" y1="'+py(37.5).toFixed(1)+'" x2="'+(W-mR)+'" y2="'+py(37.5).toFixed(1)+'" stroke="#F4B9AF" stroke-width="1.4" stroke-dasharray="4 4"/>';
+  o+='<text x="'+(W-mR)+'" y="'+(py(37.5)-5).toFixed(1)+'" text-anchor="end" font-family="inherit" font-size="9" font-weight="600" fill="#E0705C">ngưỡng sốt 37,5</text>';
+  for(var v=Math.ceil(y0*2)/2;v<=y1;v+=.5){
+    o+='<line x1="'+mL+'" y1="'+py(v).toFixed(1)+'" x2="'+(W-mR)+'" y2="'+py(v).toFixed(1)+'" stroke="#F0E4D4" stroke-opacity=".7"/>';
+    o+='<text x="'+(mL-6)+'" y="'+py(v).toFixed(1)+'" text-anchor="end" dominant-baseline="middle" font-family="inherit" font-size="9" font-weight="600" fill="#B3A196">'+String(v).replace('.',',')+'</text>'}
+  var d=ns.slice().sort(function(a,b){return tmin(a.time)-tmin(b.time)});
+  o+='<path d="'+d.map(function(e,i){return (i?'L':'M')+' '+px(tmin(e.time)).toFixed(1)+' '+py(e.nd).toFixed(1)}).join(' ')+'" fill="none" stroke="#E0705C" stroke-width="2.6" stroke-linejoin="round" stroke-linecap="round"/>';
+  d.forEach(function(e){var x=px(tmin(e.time)),y=py(e.nd);
+    o+='<circle cx="'+x.toFixed(1)+'" cy="'+y.toFixed(1)+'" r="5" fill="#fff" stroke="'+(e.nd>=37.5?'#E0705C':'#84B44F')+'" stroke-width="1.8"/>';
+    o+='<text x="'+x.toFixed(1)+'" y="'+(H-6)+'" text-anchor="middle" font-family="inherit" font-size="9" font-weight="600" fill="#B3A196">'+e.time+'</text>'});
+  return o+'</svg>';
+}
+
 /* ============ tiện ích ============ */
 function esc(s){return String(s==null?'':s).replace(/[&<>"']/g,function(c){
   return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]})}
@@ -344,6 +383,8 @@ function render(){
   var sua=ds.filter(function(e){return e.kind==='milk'}), an=ds.filter(function(e){return e.kind==='solid'});
   var tas=ds.filter(function(e){return e.kind==='diaper'}), meds=ds.filter(function(e){return e.kind==='med'});
   var tongMl=sua.reduce(function(v,e){return v+(e.ml||0)},0);
+  var nhiet=ds.filter(function(e){return e.kind==='temp'});
+  var tongAn=an.reduce(function(v,e){return v+(e.aml||0)},0);
   var uot=tas.filter(function(e){return e.loai!=='phan'}).length;
   var ngoai=tas.filter(function(e){return e.loai!=='uot'}).length;
   var laHomNay=(ngay===dk(new Date()));
@@ -371,7 +412,8 @@ function render(){
   if(gan)body+='<p style="text-align:center;font-size:14px;color:var(--muc2);margin:10px 0 0">Cữ gần nhất lúc '+gan.time+', cách đây '+khoang(gan.cach)+'</p>';
   body+='<div class="grid2" style="margin-top:12px">'+
     [['milk','Cữ sữa'],['solid','Ăn dặm'],['diaper','Tã & phân'],['med','Thuốc']].map(function(v){
-      return '<button class="big" data-act="open" data-k="'+v[0]+'" style="color:'+MAU[v[0]]+';border-color:'+VIEN[v[0]]+'">'+IC[v[0]](20)+v[1]+'</button>'}).join('')+'</div>';
+      return '<button class="big" data-act="open" data-k="'+v[0]+'" style="color:'+MAU[v[0]]+';border-color:'+VIEN[v[0]]+'">'+IC[v[0]](20)+v[1]+'</button>'}).join('')+'</div>'+
+    '<button class="big" data-act="open" data-k="temp" style="margin-top:10px;color:var(--do);border-color:#F4B9AF">'+icNhiet(20)+'Nhiệt độ</button>';
   h+=card('var(--sua)','var(--suaN)','var(--suaV)',icBinh(22),'MỘT NGÀY CỦA BÉ',body);
 
   /* diễn biến */
@@ -380,10 +422,11 @@ function render(){
     '<p class="note" style="margin:6px 0 0;color:var(--muc3);font-weight:700">Chưa ghi gì cho ngày này.<br>Bắt đầu bằng một cữ sữa nhé.</p></div>'}
   else{list=ds.map(function(e){
     var b1='',b2='';
-    if(e.kind==='milk'){b1=e.ml?(e.ml+' ml'):('Bú mẹ '+e.phut+' phút');b2=e.nguon}
-    if(e.kind==='solid'){b1=e.mon;b2=LG[e.luong]+' · '+PU[e.pu]}
+    if(e.kind==='milk'){b1=e.ml?(e.ml+' ml'):('Bú mẹ '+e.phut+' phút');b2=e.nguon+(e.ghi?(' · '+e.ghi):'')}
+    if(e.kind==='solid'){b1=e.mon+(e.aml?(' · '+e.aml+' ml'):'');b2=LG[e.luong]+' · '+PU[e.pu]+(e.ghi?(' · '+e.ghi):'')}
     if(e.kind==='diaper'){b1=TA[e.loai]+(e.tc?(' · '+TC[e.tc]):'');b2=(e.mau?MP[e.mau]:'Không có phân')+(e.ghi?(' · '+e.ghi):'')}
-    if(e.kind==='med'){b1=e.ten+(e.lieu?(' · '+e.lieu+' '+e.dv):'');b2=e.ly||'Đã cho bé uống'}
+    if(e.kind==='med'){b1=e.ten+(e.lieu?(' · '+e.lieu+' '+e.dv):'');b2=(e.ly||'Đã cho bé uống')+(e.ghi?(' · '+e.ghi):'')}
+    if(e.kind==='temp'){b1=String(e.nd).replace('.',',')+' độ C';b2=VT[e.vt||'nach']+(e.ghi?(' · '+e.ghi):'')}
     return '<div class="row" style="border-color:'+(e.canhbao?'var(--do)':VIEN[e.kind])+'">'+
       '<span class="t" style="color:'+MAU[e.kind]+'">'+e.time+'</span>'+
       '<span class="cir" style="background:'+(e.canhbao?'var(--doN)':NEN[e.kind])+'">'+IC[e.kind](20)+'</span>'+
@@ -429,10 +472,41 @@ function render(){
   h+=card('var(--can)','var(--canN)','var(--canV)',icCan(22),'CÂN NẶNG THEO THÁNG TUỔI',cbody,
     '<button class="chip on" style="background:var(--can);border-color:var(--can);margin:0" data-act="open" data-k="can">+ Ghi cân</button>');
 
+  /* thực phẩm theo nhóm chất */
+  var tp=S.tp[ngay]||{};
+  var tpBody=TPG.map(function(g){
+    var cur=(tp[g[0]]&&tp[g[0]].c)||[], gh=(tp[g[0]]&&tp[g[0]].g)||'';
+    return '<div style="background:'+g[3]+';border:1.8px solid '+g[4]+';border-radius:18px;padding:10px 12px 12px;margin-bottom:10px">'+
+      '<span class="pill" style="background:'+g[2]+';display:inline-block;margin-bottom:10px">'+g[1]+'</span>'+
+      '<div class="chips">'+g[5].map(function(m){var on=cur.indexOf(m)>=0;
+        return '<button class="chip'+(on?' on':'')+'" data-act="tp" data-g="'+g[0]+'" data-v="'+esc(m)+'" data-mau="'+g[2]+'" style="'+(on?'background:'+g[2]+';border-color:'+g[2]:'')+'">'+esc(m)+'</button>'}).join('')+'</div>'+
+      '<input data-act="tpnote" data-g="'+g[0]+'" value="'+esc(gh)+'" placeholder="Ghi chú nhóm này...">'+
+      '</div>'}).join('');
+  h+=card('var(--la)','var(--laN)','var(--laV)',icLa(22),'THỰC PHẨM TRONG NGÀY',
+    tpBody+'<p class="note">Tick những món bé đã ăn hôm nay. Một ngày đủ chất nên có mặt cả bốn nhóm, nhưng bé mới tập ăn thì cứ từ từ, mỗi món mới thử ba ngày liền rồi hãy đổi.</p>');
+
+  /* nhiệt độ */
+  var ndBody;
+  if(!nhiet.length)ndBody='<p class="note" style="background:#fff;border-radius:18px;padding:18px;text-align:center;font-weight:700">Chưa đo lần nào hôm nay. Khi bé nóng hay quấy, ghi lại để biết bé đang lên sốt hay đã hạ.</p>';
+  else{
+    var cao=nhiet.reduce(function(a,b){return b.nd>a.nd?b:a});
+    ndBody='<div class="inner" style="padding:12px">'+
+      '<div style="display:flex;align-items:baseline;gap:8px;margin-bottom:6px">'+
+      '<span style="font-size:34px;font-weight:700;color:'+(cao.nd>=37.5?'var(--do)':'var(--la)')+'">'+String(cao.nd).replace('.',',')+'</span>'+
+      '<span style="font-size:14px;color:var(--muc2)">độ C — cao nhất, lúc '+cao.time+'</span>'+
+      '<span style="margin-left:auto;font-size:13px;color:var(--muc3)">'+nhiet.length+' lần đo</span></div>'+
+      (nhiet.length>1?bieuDoNhiet(nhiet):'')+
+      '<div style="margin-top:8px">'+nhiet.slice().reverse().map(function(e){
+        return '<div class="wlist"><em>'+e.time+' · '+VT[e.vt||'nach']+'</em><span style="color:'+(e.nd>=37.5?'var(--do)':'var(--muc)')+'">'+String(e.nd).replace('.',',')+' độ C</span></div>'}).join('')+'</div>'+
+      (cao.nd>=38.5?'<p class="warn" style="margin:10px 0 0">Bé sốt cao. Cho bé đi khám nếu sốt không hạ, bé li bì, bỏ bú, thở nhanh, nôn nhiều, co giật hoặc nổi ban. Thuốc hạ sốt dùng theo chỉ định của bác sĩ.</p>':'')+
+      '</div>'}
+  h+=card('var(--do)','var(--doN)','#F4B9AF',icNhiet(22),'NHIỆT ĐỘ HÔM NAY',ndBody,
+    '<button class="chip on" style="background:var(--do);border-color:var(--do);margin:0" data-act="open" data-k="temp">+ Đo</button>');
+
   /* tổng kết */
   var tk='<div class="grid2" style="margin-bottom:12px">'+
     '<div class="stat" style="text-align:left;padding:10px 14px"><span>Tổng lượng sữa</span><b style="font-size:20px;color:var(--sua)">'+tongMl+' ml</b></div>'+
-    '<div class="stat" style="text-align:left;padding:10px 14px"><span>Số bữa ăn dặm</span><b style="font-size:20px;color:var(--an)">'+an.length+' bữa</b></div></div>'+
+    '<div class="stat" style="text-align:left;padding:10px 14px"><span>Ăn dặm</span><b style="font-size:20px;color:var(--an)">'+an.length+' bữa'+(tongAn?(' · '+tongAn+' ml'):'')+'</b></div></div>'+
     '<div class="inner" style="padding:12px 14px 14px">'+
     TICK.map(function(v){var on=!!tt.cb[v[0]];
       return '<button class="tick'+(on?' on':'')+'" data-act="tick" data-k="'+v[0]+'"><span class="box">'+(on?'✓':'')+'</span><span>'+v[1]+'</span></button>'}).join('')+
@@ -463,23 +537,28 @@ function formBe(){
 /* ============ bảng nhập ============ */
 function sheet(k){
   var laHomNay=(ngay===dk(new Date())), g=laHomNay?hhmm():'08:00', b='', mau='', td='';
-  if(k==='milk'){mau='var(--sua)';td='GHI CỮ SỮA';F={gio:g,loai:'binh',ml:120,phut:15,nguon:'Sữa mẹ'};
+  if(k==='milk'){mau='var(--sua)';td='GHI CỮ SỮA';F={gio:g,loai:'binh',ml:120,phut:15,nguon:'Sữa công thức',ghi:''};
     b='<label class="lb">Giờ bú</label><input type="time" data-f="gio" value="'+g+'" style="margin-bottom:14px">'+
       '<label class="lb">Cách bú</label>'+chips('loai',[['binh','Bình / cốc (ml)'],['me','Bú mẹ trực tiếp']],'binh',mau)+
       '<div id="gBinh"><label class="lb">Lượng sữa</label>'+
       chips('ml',[[60,60],[90,90],[120,120],[150,150],[180,180],[210,210],[240,240]],120,mau)+
       '<div style="display:flex;align-items:center;gap:10px;margin-bottom:14px"><input type="number" inputmode="numeric" data-f="ml" value="120" style="width:110px"><span>ml</span></div>'+
-      '<label class="lb">Loại sữa</label>'+chips('nguon',[['Sữa mẹ','Sữa mẹ'],['Sữa công thức','Sữa công thức'],['Sữa mẹ vắt','Sữa mẹ vắt']],'Sữa mẹ',mau)+'</div>'+
+      '<label class="lb">Loại sữa</label>'+chips('nguon',[['Sữa công thức','Sữa công thức'],['Sữa mẹ','Sữa mẹ'],['Sữa mẹ vắt','Sữa mẹ vắt']],'Sữa công thức',mau)+'</div>'+
       '<div id="gMe" class="hide"><label class="lb">Thời gian bú</label>'+
       chips('phut',[[5,'5 phút'],[10,'10 phút'],[15,'15 phút'],[20,'20 phút'],[25,'25 phút'],[30,'30 phút']],15,mau)+
-      '<p class="note">Cữ bú mẹ trực tiếp ghi theo phút nên không cộng vào tổng ml, nhưng vẫn hiện trên vòng 24 giờ.</p></div>'}
-  if(k==='solid'){mau='var(--an)';td='GHI BỮA ĂN DẶM';F={gio:laHomNay?hhmm():'11:00',mon:'',luong:'nua',pu:'thich'};
+      '<p class="note">Cữ bú mẹ trực tiếp ghi theo phút nên không cộng vào tổng ml, nhưng vẫn hiện trên vòng 24 giờ.</p></div>'+
+      '<label class="lb" style="margin-top:14px">Ghi chú</label><input data-f="ghi" placeholder="Ví dụ: bé bú chậm, còn thừa 30 ml">'}
+  if(k==='solid'){mau='var(--an)';td='GHI BỮA ĂN DẶM';F={gio:laHomNay?hhmm():'11:00',mon:'',aml:'',luong:'nua',pu:'thich',ghi:''};
     b='<label class="lb">Giờ ăn</label><input type="time" data-f="gio" value="'+F.gio+'" style="margin-bottom:14px">'+
       '<label class="lb">Bé ăn món gì</label><input data-f="mon" id="fMon" placeholder="Ví dụ: cháo bí đỏ thịt bằm" style="margin-bottom:10px">'+
       '<div class="chips">'+MON.map(function(m){return '<button class="chip" data-act="addmon" data-v="'+m+'">'+m+'</button>'}).join('')+'</div>'+
-      '<label class="lb">Bé ăn được bao nhiêu</label>'+chips('luong',kvArr(LG),'nua',mau)+
+      '<label class="lb">Lượng bé ăn</label>'+
+      chips('aml',[[30,'30 ml'],[50,'50 ml'],[80,'80 ml'],[100,'100 ml'],[120,'120 ml'],[150,'150 ml'],[200,'200 ml']],'',mau)+
+      '<div style="display:flex;align-items:center;gap:10px;margin-bottom:14px"><input type="number" inputmode="numeric" data-f="aml" placeholder="80" style="width:110px"><span>ml</span></div>'+
+      '<label class="lb">Bé ăn được bao nhiêu so với bữa</label>'+chips('luong',kvArr(LG),'nua',mau)+
       '<label class="lb">Phản ứng của bé</label>'+chips('pu',kvArr(PU),'thich',mau)+
-      '<p id="wDiUng" class="warn hide">Bữa này sẽ được đánh dấu đỏ để dễ tìm lại. Nếu bé nổi mẩn, nôn, khó thở hoặc tiêu chảy sau khi ăn, cho bé đi khám ngay.</p>'}
+      '<p id="wDiUng" class="warn hide">Bữa này sẽ được đánh dấu đỏ để dễ tìm lại. Nếu bé nổi mẩn, nôn, khó thở hoặc tiêu chảy sau khi ăn, cho bé đi khám ngay.</p>'+
+      '<label class="lb">Ghi chú</label><input data-f="ghi" placeholder="Ví dụ: món mới, bé ngậm lâu">'}
   if(k==='diaper'){mau='var(--ta)';td='GHI TÃ & PHÂN';F={gio:g,loai:'phan',tc:'mem',mau:'vang',ghi:''};
     b='<label class="lb">Giờ thay tã</label><input type="time" data-f="gio" value="'+g+'" style="margin-bottom:14px">'+
       '<label class="lb">Trong tã có gì</label>'+chips('loai',kvArr(TA),'phan',mau)+
@@ -488,7 +567,7 @@ function sheet(k){
       '<p id="wPhan" class="warn hide">Phân trắng bạc màu, phân đen hoặc có máu là dấu hiệu cần bác sĩ xem sớm. Ghi lại giờ và chụp ảnh tã để đưa bác sĩ xem.</p>'+
       '<p id="wLong" class="note hide" style="margin-bottom:12px">Nếu bé đi lỏng nhiều lần, ít tã ướt, môi khô hoặc lừ đừ, cho bé đi khám vì bé rất dễ mất nước.</p></div>'+
       '<label class="lb">Ghi chú thêm</label><input data-f="ghi" placeholder="Ví dụ: bé rặn nhiều, hăm nhẹ">'}
-  if(k==='med'){mau='var(--thuoc)';td='GHI THUỐC ĐÃ UỐNG';F={gio:g,ten:'',lieu:'',dv:'ml',ly:''};
+  if(k==='med'){mau='var(--thuoc)';td='GHI THUỐC ĐÃ UỐNG';F={gio:g,ten:'',lieu:'',dv:'ml',ly:'',ghi:''};
     b='<label class="lb">Giờ uống</label><input type="time" data-f="gio" value="'+g+'" style="margin-bottom:14px">'+
       '<label class="lb">Tên thuốc</label><input data-f="ten" id="fTen" placeholder="Ví dụ: Vitamin D3" style="margin-bottom:10px">'+
       '<div class="chips">'+TG.map(function(m){return '<button class="chip" data-act="setten" data-v="'+m+'">'+m+'</button>'}).join('')+'</div>'+
@@ -497,12 +576,22 @@ function sheet(k){
       '<div style="display:flex;flex-wrap:wrap;align-items:center;gap:8px;margin-bottom:6px"><input data-f="lieu" inputmode="decimal" placeholder="2,5" style="width:88px">'+
       chips('dv',[['ml','ml'],['giọt','giọt'],['gói','gói'],['viên','viên']],'ml',mau)+'</div>'+
       '<label class="lb">Lý do uống</label><input data-f="ly" placeholder="Ví dụ: sốt 38,5 độ · bổ sung hằng ngày">'+
+      '<label class="lb" style="margin-top:14px">Ghi chú</label><input data-f="ghi" placeholder="Ví dụ: uống xong bé nôn một ít">'+
       '<p class="note" style="margin-top:12px">Đây là sổ ghi lại những gì bé đã uống. Liều lượng và khoảng cách giữa các lần uống làm theo chỉ định của bác sĩ hoặc hướng dẫn trên hộp thuốc.</p>'}
-  if(k==='can'){mau='var(--can)';td='GHI CÂN NẶNG';F={ngay:dk(new Date()),kg:'',cm:''};
+  if(k==='can'){mau='var(--can)';td='GHI CÂN NẶNG';F={ngay:dk(new Date()),kg:'',cm:'',ghi:''};
     b='<label class="lb">Ngày cân</label><input type="date" data-f="ngay" value="'+F.ngay+'" style="margin-bottom:14px">'+
       '<label class="lb">Cân nặng (kg)</label><input data-f="kg" inputmode="decimal" placeholder="7,4" style="margin-bottom:14px">'+
-      '<label class="lb">Chiều cao (cm) — không bắt buộc</label><input data-f="cm" inputmode="decimal" placeholder="68">'+
+      '<label class="lb">Chiều cao (cm) — không bắt buộc</label><input data-f="cm" inputmode="decimal" placeholder="68" style="margin-bottom:14px">'+
+      '<label class="lb">Ghi chú</label><input data-f="ghi" placeholder="Ví dụ: cân ở trạm y tế, mặc áo mỏng">'+
       '<p class="note" style="margin-top:12px">Cân bé vào cùng thời điểm trong ngày, tốt nhất là buổi sáng trước khi ăn, để các lần cân so sánh được với nhau.</p>'}
+  if(k==='temp'){mau='var(--do)';td='GHI NHIỆT ĐỘ';F={gio:g,nd:'',vt:'nach',ghi:''};
+    b='<label class="lb">Giờ đo</label><input type="time" data-f="gio" value="'+g+'" style="margin-bottom:14px">'+
+      '<label class="lb">Nhiệt độ</label>'+
+      chips('nd',[['36.5','36,5'],['37','37'],['37.5','37,5'],['38','38'],['38.5','38,5'],['39','39'],['39.5','39,5'],['40','40']],'',mau)+
+      '<div style="display:flex;align-items:center;gap:10px;margin-bottom:14px"><input data-f="nd" inputmode="decimal" placeholder="38,2" style="width:110px"><span>độ C</span></div>'+
+      '<label class="lb">Đo ở đâu</label>'+chips('vt',[['nach','Nách'],['tran','Trán'],['tai','Tai'],['mieng','Miệng']],'nach',mau)+
+      '<p id="wSot" class="warn hide"></p>'+
+      '<label class="lb">Ghi chú</label><input data-f="ghi" placeholder="Ví dụ: bé quấy, đã lau người, uống hạ sốt lúc 14h">'}
   if(k==='be'){mau='var(--muc2)';td='THÔNG TIN BÉ';F={};b=formBe()}
 
   document.getElementById('sheet').innerHTML='<div class="grip"></div>'+
@@ -523,6 +612,19 @@ function capNhatHien(k){
     document.getElementById('gPhan').classList.toggle('hide',F.loai==='uot');
     document.getElementById('wPhan').classList.toggle('hide',CB.indexOf(F.mau)<0);
     document.getElementById('wLong').classList.toggle('hide',F.tc!=='long')}
+  if(k==='temp'){
+    var e2=document.getElementById('wSot'), d0=parseFloat(String(F.nd||'').replace(',','.')), tu2=tuoiTai(S.be.dob), m='';
+    if(d0){
+      if(d0<36)m='Nhiệt độ thấp hơn bình thường. Ủ ấm cho bé, đo lại sau 15 phút. Nếu bé lừ đừ, bú kém hoặc vẫn thấp, cho bé đi khám.';
+      else if(tu2&&tu2.thang<3&&d0>=38)m='Bé dưới 3 tháng mà sốt từ 38 độ là phải đưa đi khám ngay, không tự cho uống hạ sốt ở nhà.';
+      else if(d0>=39)m='Sốt cao. Cho bé đi khám. Trong lúc đó nới lỏng quần áo, lau người bằng nước ấm, cho bé uống sữa và nước nhiều hơn.';
+      else if(d0>=38.5)m='Bé đang sốt. Thuốc hạ sốt và liều lượng làm theo chỉ định của bác sĩ. Đo lại sau mỗi 2–4 giờ và ghi vào đây.';
+      else if(d0>=37.5)m='Sốt nhẹ. Theo dõi thêm, cho bé bú nhiều hơn, mặc thoáng và đo lại sau 1–2 giờ.';
+    }
+    if(m){e2.textContent=m;e2.classList.remove('hide')}else e2.classList.add('hide');
+    e2.style.background=(d0&&d0>=37.5)||(d0&&d0<36)?'var(--doN)':'var(--laN)';
+    e2.style.color=(d0&&d0>=37.5)||(d0&&d0<36)?'var(--do)':'var(--muc2)';
+  }
   if(k==='med'){
     var el=document.getElementById('tLan'),ten=(F.ten||'').trim().toLowerCase();
     var same=(S.logs[ngay]||[]).filter(function(e){return e.kind==='med'&&(e.ten||'').toLowerCase()===ten&&tmin(e.time)<=bgio()})
@@ -538,18 +640,22 @@ function themLog(e){e.id=Date.now()+Math.random();(S.logs[ngay]=S.logs[ngay]||[]
 function luuBang(k){
   if(k==='be'){S.be.ten=(F.ten!==undefined?F.ten:S.be.ten);S.be.dob=(F.dob!==undefined?F.dob:S.be.dob);
     if(F.gt)S.be.gt=F.gt;luu();dongBang();render();return}
-  if(k==='milk'){if(F.loai==='binh')themLog({kind:'milk',time:F.gio,ml:parseInt(F.ml,10)||0,nguon:F.nguon});
-    else themLog({kind:'milk',time:F.gio,phut:parseInt(F.phut,10)||0,nguon:'Bú mẹ trực tiếp'})}
-  if(k==='solid')themLog({kind:'solid',time:F.gio,mon:(F.mon||'').trim()||'Bữa ăn dặm',luong:F.luong,pu:F.pu,canhbao:F.pu==='diung'});
+  var gc=(F.ghi||'').trim();
+  if(k==='milk'){if(F.loai==='binh')themLog({kind:'milk',time:F.gio,ml:parseInt(F.ml,10)||0,nguon:F.nguon,ghi:gc});
+    else themLog({kind:'milk',time:F.gio,phut:parseInt(F.phut,10)||0,nguon:'Bú mẹ trực tiếp',ghi:gc})}
+  if(k==='solid')themLog({kind:'solid',time:F.gio,mon:(F.mon||'').trim()||'Bữa ăn dặm',aml:parseInt(F.aml,10)||0,luong:F.luong,pu:F.pu,ghi:gc,canhbao:F.pu==='diung'});
+  if(k==='temp'){var nd=parseFloat(String(F.nd||'').replace(',','.'));
+    if(!nd||nd<30||nd>45){alert('Nhập nhiệt độ của bé nhé.');return}
+    themLog({kind:'temp',time:F.gio,nd:nd,vt:F.vt,ghi:gc,canhbao:nd>=38.5||nd<36})}
   if(k==='diaper'){var cp=F.loai!=='uot';
     themLog({kind:'diaper',time:F.gio,loai:F.loai,tc:cp?F.tc:null,mau:cp?F.mau:null,ghi:(F.ghi||'').trim(),canhbao:cp&&CB.indexOf(F.mau)>=0})}
   if(k==='med'){if(!(F.ten||'').trim()){alert('Nhập tên thuốc trước nhé.');return}
-    themLog({kind:'med',time:F.gio,ten:F.ten.trim(),lieu:(F.lieu||'').trim(),dv:F.dv,ly:(F.ly||'').trim()})}
+    themLog({kind:'med',time:F.gio,ten:F.ten.trim(),lieu:(F.lieu||'').trim(),dv:F.dv,ly:(F.ly||'').trim(),ghi:gc})}
   if(k==='can'){var kg=parseFloat(String(F.kg||'').replace(',','.'));
     if(!kg||kg<=0){alert('Nhập cân nặng của bé nhé.');return}
     var cm=parseFloat(String(F.cm||'').replace(',','.'));
     S.cans=S.cans.filter(function(x){return x.ngay!==F.ngay});
-    S.cans.push({id:Date.now(),ngay:F.ngay,kg:kg,cm:(cm>0?cm:null)});luu()}
+    S.cans.push({id:Date.now(),ngay:F.ngay,kg:kg,cm:(cm>0?cm:null),ghi:gc});luu()}
   dongBang();render();
 }
 
@@ -565,7 +671,7 @@ function khoiPhuc(){
   i.onchange=function(){var f=i.files[0];if(!f)return;var r=new FileReader();
     r.onload=function(){try{var d=JSON.parse(r.result);
       if(!confirm('Thay toàn bộ dữ liệu hiện tại bằng file sao lưu này?'))return;
-      S.be=d.be||S.be;S.logs=d.logs||{};S.cans=d.cans||[];S.tt=d.tt||{};luu();render();
+      S.be=d.be||S.be;S.logs=d.logs||{};S.cans=d.cans||[];S.tt=d.tt||{};S.tp=d.tp||{};luu();render();
       alert('Đã khôi phục xong.')}catch(e){alert('File không đọc được.')}};
     r.readAsText(f)};
   i.click();
@@ -605,6 +711,13 @@ document.addEventListener('click',function(ev){
   if(a==='addmon'){var f=document.getElementById('fMon');
     f.value=f.value?(f.value+', '+b.dataset.v.toLowerCase()):b.dataset.v;F.mon=f.value}
   if(a==='setten'){var ft=document.getElementById('fTen');ft.value=b.dataset.v;F.ten=b.dataset.v;capNhatHien('med')}
+  if(a==='tp'){var g2=b.dataset.g,v2=b.dataset.v,t3=S.tp[ngay]||{};
+    t3[g2]=t3[g2]||{c:[],g:''};
+    var i3=t3[g2].c.indexOf(v2);
+    if(i3>=0)t3[g2].c.splice(i3,1);else t3[g2].c.push(v2);
+    S.tp[ngay]=t3;luu();
+    var on2=i3<0;b.classList.toggle('on',on2);
+    b.style.background=on2?b.dataset.mau:'';b.style.borderColor=on2?b.dataset.mau:''}
   if(a==='saoluu')saoLuu();
   if(a==='khoiphuc')khoiPhuc();
 });
@@ -618,6 +731,9 @@ document.addEventListener('input',function(ev){
       if(el.dataset.f==='ten')S.be.ten=el.value;
       if(el.dataset.f==='dob')S.be.dob=el.value;}
   }
+  if(el.dataset.act==='tpnote'){var g3=el.dataset.g,t4=S.tp[ngay]||{};
+    t4[g3]=t4[g3]||{c:[],g:''};t4[g3].g=el.value;S.tp[ngay]=t4;
+    clearTimeout(window._tp);window._tp=setTimeout(luu,400)}
   if(el.dataset.act==='note'){var t=S.tt[ngay]||{cb:{},note:''};t.note=el.value;S.tt[ngay]=t;
     clearTimeout(window._nt);window._nt=setTimeout(luu,400)}
 });
